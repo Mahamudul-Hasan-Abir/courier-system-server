@@ -1,6 +1,6 @@
 import { IParcel } from "./parcel.interface";
 import Parcel from "./parcel.model";
-
+import { getIO } from "../../socket/socket";
 const createParcelIntoDB = async (payload: IParcel) => {
   const parcel = await Parcel.create(payload);
   return parcel;
@@ -40,7 +40,23 @@ const updateParcelStatus = async (
   const updateData: any = { status };
   if (location) updateData.currentLocation = location;
 
-  return Parcel.findByIdAndUpdate(parcelId, updateData, { new: true });
+  // return Parcel.findByIdAndUpdate(parcelId, updateData, { new: true });
+
+  // Emit socket event to parcel room
+  const updatedParcel = await Parcel.findByIdAndUpdate(parcelId, updateData, {
+    new: true,
+  });
+
+  if (updatedParcel) {
+    const io = getIO();
+    io.to(parcelId).emit("parcelUpdate", {
+      status: updatedParcel.status,
+      location: updatedParcel.currentLocation,
+      parcelId: updatedParcel._id,
+    });
+  }
+
+  return updatedParcel;
 };
 
 export const ParcelServices = {
