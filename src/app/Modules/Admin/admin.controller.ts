@@ -1,39 +1,39 @@
-import Parcel from "../Parcel/parcel.model";
-import moment from "moment";
+// src/modules/admin/admin.controller.ts
+import { Request, Response } from "express";
+import httpStatus from "http-status";
+import sendResponse from "../../../utils/sendResponse";
+import { AdminServices } from "./admin.service";
 
-const getDashboardStats = async () => {
-  const today = moment().startOf("day").toDate();
-  const weekAgo = moment().subtract(7, "days").startOf("day").toDate();
-  const monthAgo = moment().subtract(30, "days").startOf("day").toDate();
+const getDashboardStats = async (_req: Request, res: Response) => {
+  const data = await AdminServices.getDashboardStats();
 
-  const totalToday = await Parcel.countDocuments({
-    createdAt: { $gte: today },
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Dashboard stats fetched successfully",
+    data,
   });
-  const totalWeek = await Parcel.countDocuments({
-    createdAt: { $gte: weekAgo },
-  });
-  const totalMonth = await Parcel.countDocuments({
-    createdAt: { $gte: monthAgo },
-  });
-
-  const codAmount = await Parcel.aggregate([
-    { $match: { isPrepaid: false } },
-    { $group: { _id: null, totalCOD: { $sum: "$codAmount" } } },
-  ]);
-
-  const failedDeliveries = await Parcel.countDocuments({ status: "Failed" });
-
-  return {
-    bookings: {
-      today: totalToday,
-      week: totalWeek,
-      month: totalMonth,
-    },
-    codAmount: codAmount[0]?.totalCOD || 0,
-    failedDeliveries,
-  };
 };
 
-export const AdminServices = {
+const exportCSV = async (_req: Request, res: Response) => {
+  const csvData = await AdminServices.generateCSV();
+
+  res.header("Content-Type", "text/csv");
+  res.attachment("parcel-report.csv");
+  res.send(csvData);
+};
+
+const exportPDF = async (_req: Request, res: Response) => {
+  res.setHeader("Content-Type", "application/pdf");
+  res.setHeader(
+    "Content-Disposition",
+    "attachment; filename=parcel-report.pdf"
+  );
+  await AdminServices.generatePDF(res);
+};
+
+export const AdminController = {
   getDashboardStats,
+  exportCSV,
+  exportPDF,
 };
