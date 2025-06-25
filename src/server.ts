@@ -47,7 +47,7 @@ async function main() {
     }
 
     await mongoose.connect(dbUrl as string);
-    console.log("✅ Database Connected");
+    console.log("Database Connected");
 
     // Create HTTP server and wrap Express app
     const server = http.createServer(app);
@@ -56,9 +56,9 @@ async function main() {
     initSocket(server);
 
     server.listen(port, () => {
-      console.log(`🚀 Server is running on port ${port}`);
+      console.log(`Server is running on port ${port}`);
     });
   } catch (error) {
-    console.log("❌ Server startup error:", error);
+    console.log("Server startup error:", error);
   }
 }
