@@ -13,5 +13,10 @@ router.get(
 
 router.get("/export/csv", auth(USER_ROLE.admin), AdminController.exportCSV);
 router.get("/export/pdf", auth(USER_ROLE.admin), AdminController.exportPDF);
+router.get(
+  "/get-all-agent",
+  auth(USER_ROLE.admin),
+  AdminController.getAllAgents
+);
 
 export const AdminRoutes = router;

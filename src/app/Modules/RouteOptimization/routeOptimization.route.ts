@@ -11,4 +11,10 @@ router.get(
   RouteOptimizationController.getOptimizedRoute
 );
 
+router.get(
+  "/my-parcels",
+  auth(USER_ROLE.agent),
+  RouteOptimizationController.getAgentParcels
+);
+
 export const RouteOptimizationRoutes = router;

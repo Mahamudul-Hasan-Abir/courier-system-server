@@ -11,7 +11,12 @@ const allowedOrigins = ["http://localhost:3000"];
 //     credentials: true,
 //   })
 // );
-app.use(cors());
+app.use(
+  cors({
+    origin: allowedOrigins, // your frontend URL
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 

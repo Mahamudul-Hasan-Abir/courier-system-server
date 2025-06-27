@@ -4,6 +4,7 @@ import Parcel from "../Parcel/parcel.model";
 import { Parser } from "json2csv";
 import moment from "moment";
 import PDFDocument from "pdfkit";
+import { User } from "../User/user.model";
 const getDashboardStats = async () => {
   const today = moment().startOf("day").toDate();
   const weekAgo = moment().subtract(7, "days").startOf("day").toDate();
@@ -35,6 +36,11 @@ const getDashboardStats = async () => {
     codAmount: codAmount[0]?.totalCOD || 0,
     failedDeliveries,
   };
+};
+
+const getAllAgents = async () => {
+  const agents = await User.find({ role: "agent" });
+  return agents;
 };
 
 const generateCSV = async () => {
@@ -97,4 +103,5 @@ export const AdminServices = {
   getDashboardStats,
   generateCSV,
   generatePDF,
+  getAllAgents,
 };

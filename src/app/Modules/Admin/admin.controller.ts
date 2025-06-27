@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import httpStatus from "http-status";
 import sendResponse from "../../../utils/sendResponse";
 import { AdminServices } from "./admin.service";
+import { User } from "../User/user.model";
 
 const getDashboardStats = async (_req: Request, res: Response) => {
   const data = await AdminServices.getDashboardStats();
@@ -23,6 +24,17 @@ const exportCSV = async (_req: Request, res: Response) => {
   res.send(csvData);
 };
 
+const getAllAgents = async (_req: Request, res: Response) => {
+  const data = await AdminServices.getAllAgents();
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "All Agents Retrieved Successfully",
+    data,
+  });
+};
+
 const exportPDF = async (_req: Request, res: Response) => {
   res.setHeader("Content-Type", "application/pdf");
   res.setHeader(
@@ -36,4 +48,5 @@ export const AdminController = {
   getDashboardStats,
   exportCSV,
   exportPDF,
+  getAllAgents,
 };
