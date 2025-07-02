@@ -3,7 +3,10 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import router from "./app/routes";
 const app = express();
-const allowedOrigins = ["http://localhost:3000"];
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://courier-system-client.vercel.app",
+];
 
 // app.use(
 //   cors({
